@@ -1,5 +1,30 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5431/service
+    username: service
+    password: ''
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate.ddl-auto: none
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      hibernate.default_schema: public
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
   application:
     name: service
+  liquibase:
+    enabled: true
+    drop-first: false
+    default-schema: public
+    change-log: classpath:/liquibase/master.xml
 server:
-  port: 8010
+  port: 8011
+logging:
+  level:
+    com.helmes: debug

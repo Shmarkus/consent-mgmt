@@ -1,0 +1,184 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Consent Management > Service
+tags:
+  - name: service
+paths:
+  /service:
+    post:
+      tags:
+        - service
+      description: >
+        A party with access to the Service Declaration API uses this message to
+        declare a Protected Service and thus become a Service Provider.
+      operationId: addServiceDeclaration
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ServiceDeclarationRequest"
+        required: true
+      responses:
+        "200":
+          description: >
+            In case of successful declaration, the Consent Service responds with
+            single string field with value “OK”.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceDeclarationResponse"
+        "400":
+          description: >
+            Possible errors
+
+
+            * **duplicate_declaration** – there already is a declaration by this party with such id.
+
+
+            * **invalid_request** – declaration validation fails. serviceProviderId and the authenticated identity of the party do not match; a mandatory field (or a translation of one) is missing; validUntil in past; maxCacheSeconds negative; description or name does not validate by rules defined by Consent Service
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+servers:
+  - url: http://localhost:8011
+components:
+  schemas:
+    ServiceDeclarationRequest:
+      type: object
+      description: >
+        The request is data structure that contains all the parts of the Service
+        Declaration
+      properties:
+        serviceProviderId:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: >
+            Identifier of the Service Provider. MUST be same as authenticated in
+            transport. Agreed upon between Consent Service and the Service
+            Provider when securing access to the Consent Service.
+        serviceDeclarationId:
+          type: string
+          maxLength: 40
+          minLength: 1
+          description: >
+            Internal identifier of the Protected Service. Issued by the Service
+            Provider. Used by the Service Provider to recognize the Protected
+            Service for authorization
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: >
+            Name of the Protected Service. Will be shown to the Data Subject as
+            a part of the Consent to be given.
+        description:
+          type: string
+          description: >
+            Description of the service. Will be shown to the Data Subject as a
+            part of the Consent to be given.
+
+
+            Should contain
+
+            * What are the input parameters for the service (if applicable)
+
+            * What data will the service return directly to the Client, which time periods, which fields, how precise
+
+            * What other data can the Client deduce from the response
+
+            * Example data (if applicable or reasonable)
+
+
+            The Consent Server should support some simple markup language to structure this text. For example, this could be a subset of markdown or HTML.
+        technicalDescription:
+          type: string
+          description: >
+            Technical description, meant to be used by the Client to decide if
+            this is the Service Declaration for the service that they need
+            access to.
+
+            Contains short description of used protocol and reference to the service description. It may contain X-Road service name and reference to WSDL or other service documentation.
+
+
+            Translation rules for this field are relaxed compared to the main description field.
+        consentMaxDurationSeconds:
+          type: integer
+          format: int32
+          minimum: 0
+          description: >
+            Maximum allowed duration of Consent that allows use of this service.
+            The actual duration of a Consent will be minimum over max durations
+            of all the services involved.
+
+            It is expected that for some of the services this value will correspond to several years.
+        needSignature:
+          type: boolean
+          default: false
+          description: >
+            true if the Service Provider does need to have the Consent digitally
+            signed by the Data Subject. If false the Consent Service MAY use
+            other means to prove that the Data Subject did actually give the
+            Consent.
+
+
+            Default false.
+        validUntil:
+          type: integer
+          format: int64
+          description: >
+            The time until which the Service Provider agrees to provide service
+            as declared. Consents about this service will be invalid on and
+            after this moment. The only field the Service Provider can update
+            later.
+
+            By default the declaration is valid infinitely.
+        maxCacheSeconds:
+          type: integer
+          format: int32
+          minimum: 0
+          description: >
+            If the service needs to cache the validation result, this is the
+            maximum allowed time to cache the validation. The maximum value from
+            all the Service Declarations that the Purpose Declaration refers to
+            is shown to the Data Subject as this is the maximum time the Consent
+            may be considered to be valid after a revocation. Every service must
+            still honor the value declared here (and used in the validation
+            response).
+      required:
+        - serviceProviderId
+        - serviceDeclarationId
+        - name
+        - description
+        - technicalDescription
+        - consentMaxDurationSeconds
+    ServiceDeclarationResponse:
+      type: object
+      properties:
+        response:
+          type: string
+      example:
+        response: OK
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: 'date-time'
+        status:
+          type: integer
+          format: int32
+        error:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+      example:
+        timestamp: "2020-03-31T13:04:50.595+0000"
+        status: 400
+        error: "Bad Request"
+        message: "Validation failed for object='serviceDeclarationRequest'. Error count: 1"
+        path: "/service"

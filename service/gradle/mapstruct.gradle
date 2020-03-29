@@ -1,0 +1,11 @@
+ext {
+    mapstructVersion = "1.2.0.Final"
+}
+dependencies {
+    compileOnly("org.mapstruct:mapstruct-jdk8:${mapstructVersion}")
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+compileJava {
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.compilerArgs << "-Amapstruct.defaultComponentModel=spring"
+}

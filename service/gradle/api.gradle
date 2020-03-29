@@ -1,0 +1,21 @@
+dependencies {
+    // SpringFox dependencies
+    implementation 'io.springfox:springfox-swagger2:2.8.0'
+    implementation 'io.springfox:springfox-swagger-ui:2.8.0'
+    implementation 'javax.xml.bind:jaxb-api:2.2.11'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'org.openapitools:jackson-databind-nullable:0.1.0'
+    // Bean Validation API support
+    implementation 'javax.validation:validation-api'
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = file("$projectDir/ext/api/openapi.yml").absolutePath
+    outputDir = "$buildDir/generated".toString()
+    configFile = file("$projectDir/ext/api/openapi-conf.json").absolutePath
+}
+
+
+compileJava.dependsOn tasks.openApiGenerate
+sourceSets.main.java.srcDir "${buildDir}/generated/src/main/java"

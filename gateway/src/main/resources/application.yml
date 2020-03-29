@@ -6,6 +6,3 @@ spring:
       discovery:
         locator:
           enabled: true
-logging:
-  level:
-    ROOT: debug

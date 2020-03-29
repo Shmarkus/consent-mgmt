@@ -1,9 +1,0 @@
-version: '3'
-services:
-  registry-postgresql:
-    image: postgres:11.5
-    environment:
-      - POSTGRES_USER=registry
-      - POSTGRES_PASSWORD=
-    ports:
-      - 5432:5432
