@@ -5,5 +5,7 @@ services:
     environment:
       - POSTGRES_USER=service
       - POSTGRES_PASSWORD=
-    ports:
-      - 5431:5432
+networks:
+  consent_net:
+    external:
+      name: consent_net

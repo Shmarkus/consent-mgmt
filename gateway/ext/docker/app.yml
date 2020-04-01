@@ -1,0 +1,13 @@
+version: '3'
+services:
+  gateway-app:
+    image: gateway
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+    - 8080:8080
+networks:
+  consent_net:
+    external:
+      name: consent_net

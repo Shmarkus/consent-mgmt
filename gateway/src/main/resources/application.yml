@@ -6,3 +6,10 @@ spring:
       discovery:
         locator:
           enabled: true
+eureka:
+  instance:
+    preferIpAddress: true
+    hostname: gateway-app
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-app:8761/eureka/

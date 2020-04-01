@@ -28,3 +28,11 @@ server:
 logging:
   level:
     com.helmes: debug
+eureka:
+  instance:
+    preferIpAddress: true
+    hostname: service-app
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-app:8761/eureka/
+
