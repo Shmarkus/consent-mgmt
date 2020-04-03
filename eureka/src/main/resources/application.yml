@@ -1,9 +1,21 @@
-server:
-  port: 8761
 spring:
   application:
     name: eureka
 eureka:
+  instance:
+    hostname: eureka-app
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
   client:
     registerWithEureka: false
     fetchRegistry: false
+    serviceUrl:
+      defaultZone: https://eureka-app:8761/eureka/
+server:
+  port: 8761
+  ssl:
+    enabled: true
+    key-store: classpath:eureka.jks
+    key-alias: eureka
+    key-store-password: eureka

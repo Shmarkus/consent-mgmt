@@ -22,6 +22,11 @@ public class ServiceResource implements ServiceApi {
         this.serviceService = serviceService;
     }
 
+    /**
+     * Add service declaration to database. When declaration validation fails, return HTTP 400 with appropriate message
+     * @param serviceDeclarationRequest  (required)
+     * @return ServiceDeclarationResponse on success
+     */
     @Override
     public ResponseEntity<ServiceDeclarationResponse> addServiceDeclaration(@Valid ServiceDeclarationRequest serviceDeclarationRequest) {
         log.debug("Request to save service declaration: {}", serviceDeclarationRequest);

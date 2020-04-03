@@ -5,8 +5,10 @@ services:
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://service-postgresql:5432/service
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://service-postgresql:5432/
+    volumes:
+      - ../../../jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
 networks:
-  consent_net:
+  default:
     external:
       name: consent_net

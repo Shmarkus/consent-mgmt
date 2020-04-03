@@ -5,7 +5,9 @@ services:
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      - ../../../jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
 networks:
-  consent_net:
+  default:
     external:
       name: consent_net

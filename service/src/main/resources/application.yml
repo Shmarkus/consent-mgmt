@@ -1,6 +1,13 @@
 spring:
+  application:
+    name: service
+  liquibase:
+    enabled: true
+    drop-first: false
+    default-schema: public
+    change-log: classpath:/liquibase/master.xml
   datasource:
-    url: jdbc:postgresql://localhost:5431/service
+    url: jdbc:postgresql://localhost:5432/service
     username: service
     password: ''
   jpa:
@@ -16,23 +23,19 @@ spring:
       hibernate.default_schema: public
       hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect
     database-platform: org.hibernate.dialect.PostgreSQL95Dialect
-  application:
-    name: service
-  liquibase:
-    enabled: true
-    drop-first: false
-    default-schema: public
-    change-log: classpath:/liquibase/master.xml
-server:
-  port: 8011
-logging:
-  level:
-    com.helmes: debug
 eureka:
   instance:
-    preferIpAddress: true
     hostname: service-app
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
   client:
     serviceUrl:
-      defaultZone: http://eureka-app:8761/eureka/
-
+      defaultZone: https://eureka-app:8761/eureka/
+server:
+  port: 8010
+  ssl:
+    enabled: true
+    key-store: classpath:service.jks
+    key-alias: service
+    key-store-password: service

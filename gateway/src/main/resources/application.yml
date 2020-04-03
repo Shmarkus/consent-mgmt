@@ -8,8 +8,17 @@ spring:
           enabled: true
 eureka:
   instance:
-    preferIpAddress: true
     hostname: gateway-app
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
   client:
     serviceUrl:
-      defaultZone: http://eureka-app:8761/eureka/
+      defaultZone: https://eureka-app:8761/eureka/
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:gateway.jks
+    key-alias: gateway
+    key-store-password: gateway

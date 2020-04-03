@@ -6,6 +6,6 @@ services:
       - POSTGRES_USER=service
       - POSTGRES_PASSWORD=
 networks:
-  consent_net:
+  default:
     external:
       name: consent_net

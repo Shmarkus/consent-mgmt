@@ -20,7 +20,7 @@ public class ServiceDeclarationRequestValidatorImpl implements ServiceDeclaratio
         if ((request.getValidUntil() != null &&
             request.getValidUntil() < Instant.now().getEpochSecond()) ||
             request.getMaxCacheSeconds() < 0 ||
-            violations.size() > 0) {
+            !violations.isEmpty()) {
             throw new ServiceValidationException("invalid_request");
         }
         return true;
