@@ -54,17 +54,29 @@ To build all docker containers, run:
 
 ```./gradlew jibDockerBuild```
 
-To start the containers, run (in the following order):
+To start the containers, run:
 
-```docker-compose -f eureka/ext/docker/app.yml up -d```
+```docker-compose  up -d```
 
-```docker-compose -f gateway/ext/docker/app.yml up -d```
+Check the services health from these links:
+ * [Eureka](https://localhost:8761/actuator/health)
+ * [Gateway](https://localhost:8443/actuator/health)
+ * [Service](https://localhost:8010/actuator/health)
 
-```docker-compose -f service/ext/docker/postgres.yml up -d```
 
-```docker-compose -f service/ext/docker/app.yml up -d```
-
-Try the service: 
+Call the service: 
 ```bash
 curl -X POST "https://localhost:8443/SERVICE/service" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":0,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
 ```
+
+# Etc
+
+Creating certificate for a service:
+```bash
+openssl genrsa -out [service].key 2048
+openssl req -new -x509 -key [service].key -out [service].crt -days 3650 -subj /CN=[service]-app/OU=GDEV/O=Helmes
+openssl pkcs12 -export -in [service].crt -inkey [service].key -name [service] -out [service].p12
+keytool -importkeystore -destkeystore [service].jks -srckeystore [service].p12 -srcstoretype PKCS12
+```
+And import the certificate to truststore (in project root) used by other services
+```keytool -import -file [service].crt -alias [service] -keystore jssecacerts```

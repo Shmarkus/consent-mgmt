@@ -1,0 +1,39 @@
+version: '3'
+services:
+  service-postgresql:
+    image: postgres:11.5
+    environment:
+      - POSTGRES_USER=service
+      - POSTGRES_PASSWORD=
+  eureka-app:
+    image: eureka
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      - ./jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
+    ports:
+      - 8761:8761
+  gateway-app:
+    image: gateway
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      - ./jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
+    ports:
+      - 8443:8443
+  service-app:
+    image: service
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://service-postgresql:5432/
+    volumes:
+      - ./jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
+    ports:
+      - 8010:8010
+networks:
+  default:
+    external:
+      name: consent_net
