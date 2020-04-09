@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: declaration
+  liquibase:
+    enabled: true
+    drop-first: false
+    default-schema: public
+    change-log: classpath:/liquibase/master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/declaration
+    username: declaration
+    password: ''
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate.ddl-auto: none
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      hibernate.default_schema: public
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+eureka:
+  instance:
+    hostname: declaration-app
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
+  client:
+    serviceUrl:
+      defaultZone: https://eureka-app:8761/eureka/
+server:
+  port: 8010
+  ssl:
+    enabled: true
+    key-store: classpath:declaration.jks
+    key-alias: declaration
+    key-store-password: declaration

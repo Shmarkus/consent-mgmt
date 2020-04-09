@@ -1,4 +1,4 @@
 rootProject.name = 'consent-mgmt'
 include 'eureka'
-include 'service'
+include 'declaration'
 include 'gateway'

@@ -18,15 +18,15 @@
 Tegemist on Gradle multi-project projektiga, et hõlbustada proovitöö esitamist. Ideaalmaailmas on iga teenus oma koodivaramus.
 
 Projekt koosneb:
- * **eureka** Netflix Eureka service discovery;
+ * **eureka** Netflix Eureka declaration discovery;
  * **gateway** Spring Cloud Gateway;
- * **service** Service Declaration mikroteenus (sõltub PostgreSQL andmebaasist).
+ * **declaration** Service Declaration mikroteenus (sõltub PostgreSQL andmebaasist).
  
 Eureka server on hädavajalik teenuste avastamisel, Gateway kasutab Eurekat, et leida teenused ning päringud õige teenuse pihta proxyda.
 
 Igas projektis on **ext** kaust, kus asuvad nii Docker Compose kui ka OpenApi failid. OpenApi spetsifikatsiooni kasutatakse
 serveri teenuste koodigenereerimisel Gradle **compileJava** taski sees.
- * Service teenuse OpenApi spec: ```[teekond projektijuurkaustani]\service\ext\api\openapi.yml```
+ * Service teenuse OpenApi spec: ```[teekond projektijuurkaustani]\ext\api\openapi.yml```
 
 
 Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või MapStruct on leitavad teenuse **gradle** 
@@ -76,18 +76,20 @@ Kontrolli teenuste toimimist:
 
 Kutsu teenus välja järgmise käsuga (esimene kord õnnestub, teisel korral tuleb duplicate_declaration viga): 
 ```bash
-curl -X POST "https://localhost:8443/SERVICE/service" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":0,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
+curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":0,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
 ```
 
 # Arendajale
 
 Teenuse sertifikaadi genereerimine:
 ```bash
-openssl genrsa -out [service].key 2048
-openssl req -new -x509 -key [service].key -out [service].crt -days 3650 -subj /CN=[service]-app/OU=GDEV/O=Helmes
-openssl pkcs12 -export -in [service].crt -inkey [service].key -name [service] -out [service].p12
-keytool -importkeystore -destkeystore [service].jks -srckeystore [service].p12 -srcstoretype PKCS12
+openssl genrsa -out [declaration].key 2048
+openssl req -new -x509 -key [declaration].key -out [declaration].crt -days 3650 -subj /CN=[declaration]-app/OU=GDEV/O=Helmes
+openssl pkcs12 -export -in [declaration].crt -inkey [declaration].key -name [declaration] -out [declaration].p12
+keytool -importkeystore -destkeystore [declaration].jks -srckeystore [declaration].p12 -srcstoretype PKCS12
 ```
 Genereeritud sertifikaadi import:
 
-```keytool -import -file [service].crt -alias [service] -keystore jssecacerts```
+```keytool -import -file [declaration].crt -alias [declaration] -keystore jssecacerts```
+
+Jssecacerts parool on ```changeit```

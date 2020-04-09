@@ -1,0 +1,11 @@
+version: '3'
+services:
+  postgresql:
+    image: postgres:11.5
+    environment:
+      - POSTGRES_USER=declaration
+      - POSTGRES_PASSWORD=
+networks:
+  default:
+    external:
+      name: consent_net

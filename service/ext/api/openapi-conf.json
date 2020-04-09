@@ -1,8 +1,0 @@
-{
-  "dateLibrary": "java8",
-  "hideGenerationTimestamp": true,
-  "apiPackage": "com.helmes.consent.service.server.api",
-  "modelPackage": "com.helmes.consent.service.server.model",
-  "interfaceOnly": true,
-  "serializableModel": "true"
-}
