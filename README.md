@@ -26,7 +26,7 @@ Eureka server on hädavajalik teenuste avastamisel, Gateway kasutab Eurekat, et 
 
 Igas projektis on **ext** kaust, kus asuvad nii Docker Compose kui ka OpenApi failid. OpenApi spetsifikatsiooni kasutatakse
 serveri teenuste koodigenereerimisel Gradle **compileJava** taski sees.
- * Service teenuse OpenApi spec: ```[teekond projektijuurkaustani]\ext\api\openapi.yml```
+ * declaration teenuse OpenApi spec: ```declaration\ext\api\openapi.yml```
 
 
 Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või MapStruct on leitavad teenuse **gradle** 
