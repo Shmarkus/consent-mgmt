@@ -17,12 +17,8 @@ public class ServiceDeclarationRequestValidatorImpl implements ServiceDeclaratio
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<ServiceDeclarationRequest>> violations = validator.validate(request);
-        if ((request.getValidUntil() != null &&
-            request.getValidUntil() < Instant.now().getEpochSecond()) ||
-            request.getMaxCacheSeconds() < 0 ||
-            !violations.isEmpty()) {
-            throw new ServiceValidationException("invalid_request");
-        }
-        return true;
+        return violations.isEmpty() &&
+                (request.getValidUntil() != null && request.getValidUntil() > Instant.now().getEpochSecond()) &&
+                request.getMaxCacheSeconds() >= 0;
     }
 }

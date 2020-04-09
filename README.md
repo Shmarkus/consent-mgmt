@@ -22,10 +22,12 @@ Projekt koosneb:
  * **gateway** Spring Cloud Gateway;
  * **service** Service Declaration mikroteenus (sõltub PostgreSQL andmebaasist).
  
-Eureka server on hädavajalik teenuste aavstamiseks, Gateway kasutab Eurekat, et leida teenused ning päringud õige teenuse pihta proxyda.
+Eureka server on hädavajalik teenuste avastamisel, Gateway kasutab Eurekat, et leida teenused ning päringud õige teenuse pihta proxyda.
 
 Igas projektis on **ext** kaust, kus asuvad nii Docker Compose kui ka OpenApi failid. OpenApi spetsifikatsiooni kasutatakse
 serveri teenuste koodigenereerimisel Gradle **compileJava** taski sees.
+ * Service teenuse OpenApi spec: ```[teekond projektijuurkaustani]\service\ext\api\openapi.yml```
+
 
 Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või MapStruct on leitavad teenuse **gradle** 
 kaustast

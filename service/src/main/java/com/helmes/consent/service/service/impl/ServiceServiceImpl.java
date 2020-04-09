@@ -1,12 +1,11 @@
 package com.helmes.consent.service.service.impl;
 
-import com.helmes.consent.service.service.validation.ServiceDeclarationRequestValidator;
-import com.helmes.consent.service.service.validation.ServiceValidationException;
 import com.helmes.consent.service.repository.ServiceRepository;
 import com.helmes.consent.service.server.model.ServiceDeclarationRequest;
-import com.helmes.consent.service.server.model.ServiceDeclarationResponse;
 import com.helmes.consent.service.service.ServiceService;
 import com.helmes.consent.service.service.mapper.ServiceMapper;
+import com.helmes.consent.service.service.validation.ServiceDeclarationRequestValidator;
+import com.helmes.consent.service.service.validation.ServiceValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -25,17 +24,18 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public ServiceDeclarationResponse save(ServiceDeclarationRequest request) throws ServiceValidationException {
+    public ServiceDeclarationRequest save(ServiceDeclarationRequest request) throws ServiceValidationException, ServiceDuplicateDeclarationException {
         log.debug("Saving declaration request {}", request);
-        serviceDeclarationRequestValidator.isValid(request);
-        ServiceDeclarationResponse response = new ServiceDeclarationResponse();
+        if (!serviceDeclarationRequestValidator.isValid(request)) {
+            log.error("Unable to save, request is not valid");
+            throw new ServiceValidationException("invalid_request");
+        }
         try {
-            serviceRepository.save(serviceMapper.toEntity(request));
-            response.setResponse("OK");
+            com.helmes.consent.service.domain.Service service = serviceRepository.save(serviceMapper.toEntity(request));
+            return serviceMapper.toDto(service);
         } catch (DataIntegrityViolationException e) {
             log.error("Unable to save: {}", e.getMessage());
-            throw new ServiceValidationException("duplicate_declaration");
+            throw new ServiceDuplicateDeclarationException("duplicate_declaration");
         }
-        return response;
     }
 }
