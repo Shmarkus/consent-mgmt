@@ -1,4 +1,4 @@
-# Projekti eeldused
+# Projekti info
 
 ## Platvormid
  * AdoptOpenJDK 11
@@ -21,16 +21,23 @@ Projekt koosneb:
  * **eureka** Netflix Eureka declaration discovery;
  * **gateway** Spring Cloud Gateway;
  * **declaration** Service Declaration mikroteenus (sõltub PostgreSQL andmebaasist).
+ * **provider** Service Provider mikroteenus (sõltub PostgreSQL andmebaasist).
  
 Eureka server on hädavajalik teenuste avastamisel, Gateway kasutab Eurekat, et leida teenused ning päringud õige teenuse pihta proxyda.
 
 Igas projektis on **ext** kaust, kus asuvad nii Docker Compose kui ka OpenApi failid. OpenApi spetsifikatsiooni kasutatakse
 serveri teenuste koodigenereerimisel Gradle **compileJava** taski sees.
- * declaration teenuse OpenApi spec: ```declaration\ext\api\openapi.yml```
+ * **declaration** teenuse OpenApi spec: ```declaration\ext\api\openapi.yml```
+ * **provider** teenuse OpenApi spec: ```provider\ext\api\openapi.yml```
 
+Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või MapStruct on leitavad teenuse **gradle** kaustast
 
-Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või MapStruct on leitavad teenuse **gradle** 
-kaustast
+Andmebaas paigaldatakse ning muudatusi hallatakse läbi Liquibase skriptide. Rakenduse käivitamisel kontrollitakse andmebaasi seisu
+ning vajadusel uuendatakse andmebaasi struktuur. Liquibase skriptid on leitavad: ```provider/src/main/resources/liquibase``` ja 
+```declaration/src/main/resources/liquibase```
+@FeignClient(name="${serviceProvider.name:serviceProvider}", url="${serviceProvider.url:https://localhost:8011}", configuration = ClientConfiguration.class)
+public interface ServiceProviderApiClient extends ServiceProviderApi {
+}
 
 # Paigaldus
 
@@ -46,13 +53,22 @@ Kõikide teenuste ehitamiseks käivita (kindla teenuse ehitamiseks käivita sama
 
 ```./gradlew clean build```
 
+# Ilma Dockerita
+Enne projektide käivitamist lisada hosts faili (C:\Windows\System32\drivers\etc\hosts, /etc/hosts), **vastasel juhul sertifikaadikontroll ebaõnnestub**:
+```
+127.0.0.1 eureka-app
+127.0.0.1 gateway-app
+127.0.0.1 provider-app
+127.0.0.1 declaration-app
+```
+
 Teenuse kokkuehitatud pakk asub teenuse kaustas **[teenus]/build/libs**. Teenuse lokaalseks käivitamiseks kasuta käsku:
 
-```java -Djavax.net.ssl.trustStore=[teekond projektijuurkaustani]/jssecacerts -jar [teenus].jar``` 
+```java -Djavax.net.ssl.trustStore=[teekond projektijuurkaustani]/jssecacerts -jar [teekond projektijuurkaustani]/build/libs/[teenus].jar``` 
 
 Välise konfiguratsiooni kasutamiseks kasuta järgmist käsku:
 
-```java -Djavax.net.ssl.trustStore=[teekond projektijuurkaustani]/jssecacerts -jar [teenus].jar --spring.config.location=classpath:config/application.yml,[teekond konfiguratsioonifailini].yml```
+```java -Djavax.net.ssl.trustStore=[teekond projektijuurkaustani]/jssecacerts -jar [teekond projektijuurkaustani]/build/libs/.jar --spring.config.location=classpath:config/application.yml,[teekond konfiguratsioonifailini].yml```
 
 # Docker
 
@@ -73,11 +89,22 @@ Kontrolli teenuste toimimist:
  * [Eureka](https://localhost:8761/actuator/health)
  * [Gateway](https://localhost:8443/actuator/health)
  * [Service](https://localhost:8010/actuator/health)
+ * [Provider](https://localhost:8011/actuator/health)
+
+Kui teenus on töökorras, on vastuseks:
+```json
+{
+"status": "UP"
+}
+```
 
 Kutsu teenus välja järgmise käsuga (esimene kord õnnestub, teisel korral tuleb duplicate_declaration viga): 
 ```bash
 curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":0,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
 ```
+
+# OpenAPI
+Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas swagger-sui.yml failis
 
 # Arendajale
 

@@ -1,0 +1,15 @@
+api:
+  endpoints:
+    provider: https://provider-app:8011/v3/api-doc
+    declaration: https://declaration-app:8010/v3/api-doc
+meta:
+  title: Consent Management
+  description: Consent Management test assignment
+  licence: http://www.apache.org/licenses/LICENSE-2.0.html
+  licenceUrl: http://www.apache.org/licenses/LICENSE-2.0.html
+  tosUrl: https://www.termsfeed.com/terms-service-generator/
+  version: 1.0.0
+contact:
+  name: Markus Karileet
+  url: https://helmes.com
+  email: markus@helmes.com

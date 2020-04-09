@@ -2,6 +2,7 @@ package com.helmes.consent.declaration.service.impl;
 
 import com.helmes.consent.declaration.DeclarationApplication;
 import com.helmes.consent.declaration.domain.Declaration;
+import com.helmes.consent.declaration.feign.api.ServiceProviderApi;
 import com.helmes.consent.declaration.repository.DeclarationRepository;
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
 import com.helmes.consent.declaration.service.DeclarationService;
@@ -33,6 +34,9 @@ class ServiceDeclarationImplTest {
     @Mock
     private DeclarationRequestValidator validator;
 
+    @Mock
+    private ServiceProviderApi serviceProviderApi;
+
     private DeclarationService declarationService;
 
     @BeforeEach
@@ -40,7 +44,7 @@ class ServiceDeclarationImplTest {
         MockitoAnnotations.initMocks(this);
         doReturn(new Declaration()).when(repository).save(any());
         doReturn(true).when(validator).isValid(any());
-        this.declarationService = new DeclarationServiceImpl(declarationMapper, repository, validator);
+        this.declarationService = new DeclarationServiceImpl(declarationMapper, repository, validator, serviceProviderApi);
     }
 
     @Test
@@ -52,16 +56,12 @@ class ServiceDeclarationImplTest {
     @Test
     void shouldNotSave_uniqueConstraintException() {
         doThrow(DataIntegrityViolationException.class).when(repository).save(any());
-        assertThrows(DuplicateDeclarationException.class, () -> {
-            this.declarationService.save(new ServiceDeclaration());
-        });
+        assertThrows(DuplicateDeclarationException.class, () -> this.declarationService.save(new ServiceDeclaration()));
     }
 
     @Test
     void shouldNotSave_notValidCache() {
         doReturn(false).when(validator).isValid(any());
-        assertThrows(DeclarationValidationException.class, () -> {
-            this.declarationService.save(new ServiceDeclaration());
-        });
+        assertThrows(DeclarationValidationException.class, () -> this.declarationService.save(new ServiceDeclaration()));
     }
 }

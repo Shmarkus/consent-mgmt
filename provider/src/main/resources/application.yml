@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: provider
+  liquibase:
+    enabled: true
+    drop-first: false
+    default-schema: public
+    change-log: classpath:/liquibase/master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5431/provider
+    username: provider
+    password: ''
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    hibernate.ddl-auto: none
+    properties:
+      hibernate.id.new_generator_mappings: true
+      hibernate.cache.use_second_level_cache: true
+      hibernate.cache.use_query_cache: false
+      hibernate.generate_statistics: false
+      hibernate.cache.region.factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      hibernate.default_schema: public
+      hibernate.dialect: org.hibernate.dialect.PostgreSQL95Dialect
+    database-platform: org.hibernate.dialect.PostgreSQL95Dialect
+eureka:
+  instance:
+    hostname: provider-app
+    non-secure-port-enabled: false
+    secure-port: ${server.port}
+    secure-port-enabled: true
+    statusPageUrl: https://${eureka.hostname}:${server.port}/actuator/info
+    healthCheckUrl: https://${eureka.hostname}:${server.port}/actuator/health
+    homePageUrl: https://${eureka.hostname}:${server.port}/
+  client:
+    serviceUrl:
+      defaultZone: https://eureka-app:8761/eureka/
+server:
+  port: 8011
+  ssl:
+    enabled: true
+    key-store: classpath:provider.jks
+    key-alias: provider
+    key-store-password: provider
+info:
+  app:
+    name: ${spring.application.name}
+    version: 1.0.0

@@ -1,0 +1,9 @@
+{
+  "title": "provider",
+  "dateLibrary": "java8",
+  "hideGenerationTimestamp": true,
+  "apiPackage": "com.helmes.consent.declaration.feign.api",
+  "modelPackage": "com.helmes.consent.declaration.feign.model",
+  "serializableModel": "true",
+  "interfaceOnly": true
+}

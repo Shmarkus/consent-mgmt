@@ -1,0 +1,14 @@
+version: '3'
+services:
+  provider-app:
+    image: declaration
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-provider:5432/
+    volumes:
+      - ../../../jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
+networks:
+  default:
+    external:
+      name: consent_net

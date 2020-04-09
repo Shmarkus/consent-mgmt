@@ -19,3 +19,7 @@ server:
     key-store: classpath:eureka.jks
     key-alias: eureka
     key-store-password: eureka
+info:
+  app:
+    name: ${spring.application.name}
+    version: 1.0.0

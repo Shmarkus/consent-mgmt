@@ -1,4 +1,5 @@
 spring:
+  cloud.loadbalancer.ribbon.enabled: false
   application:
     name: declaration
   liquibase:
@@ -29,6 +30,9 @@ eureka:
     non-secure-port-enabled: false
     secure-port: ${server.port}
     secure-port-enabled: true
+    statusPageUrl: https://${eureka.hostname}:${server.port}/actuator/info
+    healthCheckUrl: https://${eureka.hostname}:${server.port}/actuator/health
+    homePageUrl: https://${eureka.hostname}:${server.port}/
   client:
     serviceUrl:
       defaultZone: https://eureka-app:8761/eureka/
@@ -39,3 +43,7 @@ server:
     key-store: classpath:declaration.jks
     key-alias: declaration
     key-store-password: declaration
+info:
+  app:
+    name: ${spring.application.name}
+    version: 1.0.0

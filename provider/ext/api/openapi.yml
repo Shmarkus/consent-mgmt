@@ -1,0 +1,51 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Consent Management > Service Provider
+tags:
+  - name: service-provider
+paths:
+  "/provider/{providerId}":
+    get:
+      tags:
+        - service-provider
+      summary: Find provider by service provider ID
+      operationId: getServiceProviderByServiceProviderId
+      parameters:
+        - name: providerId
+          in: path
+          description: Service provider ID to find
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Service Provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ServiceProvider"
+        "404":
+          description: Service Provider with provided ID not found
+servers:
+  - url: https://provider-app:8011
+components:
+  schemas:
+    ServiceProvider:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        serviceProviderId:
+          type: string
+          minLength: 1
+          maxLength: 100
+        registryNumber:
+          type: string
+          minLength: 1
+          maxLength: 50

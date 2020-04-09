@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { url "https://repo1.maven.org/maven2" }
+        // or, via Gradle Plugin Portal:
+        // url "https://plugins.gradle.org/m2/"
+    }
+    dependencies {
+        classpath "org.openapitools:openapi-generator-gradle-plugin:4.2.3"
+    }
+}
+
 dependencies {
     // SpringFox dependencies
     implementation 'io.springfox:springfox-swagger2:2.8.0'
@@ -9,13 +21,26 @@ dependencies {
     implementation 'javax.validation:validation-api'
 }
 
-openApiGenerate {
+task generateServer(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
     generatorName = "spring"
     inputSpec = file("$projectDir/ext/api/openapi.yml").absolutePath
     outputDir = "$buildDir/generated".toString()
     configFile = file("$projectDir/ext/api/openapi-conf.json").absolutePath
 }
+task generateServerDocs(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "openapi"
+    inputSpec = file("$projectDir/ext/api/openapi.yml").absolutePath
+    outputDir = "$buildDir/resources/main".toString()
+    configFile = file("$projectDir/ext/api/openapi-conf.json").absolutePath
+}
+task generateClient(type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+    generatorName = "spring"
+    library = "spring-cloud"
+    inputSpec = file("$projectDir/../provider/ext/api/openapi.yml").absolutePath
+    outputDir = "$buildDir/generated".toString()
+    configFile = file("$projectDir/ext/api/provider/openapi-conf.json").absolutePath
+}
 
+compileJava.dependsOn generateServer, generateClient, generateServerDocs
 
-compileJava.dependsOn tasks.openApiGenerate
 sourceSets.main.java.srcDir "${buildDir}/generated/src/main/java"

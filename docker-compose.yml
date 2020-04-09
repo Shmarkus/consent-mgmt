@@ -1,9 +1,14 @@
 version: '3'
 services:
-  postgresql:
+  postgresql-declaration:
     image: postgres:11.5-alpine
     environment:
       - POSTGRES_USER=declaration
+      - POSTGRES_PASSWORD=
+  postgresql-provider:
+    image: postgres:11.5-alpine
+    environment:
+      - POSTGRES_USER=provider
       - POSTGRES_PASSWORD=
   eureka-app:
     image: eureka
@@ -28,11 +33,27 @@ services:
     environment:
       - _JAVA_OPTIONS=-Xmx512m -Xms256m
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-declaration:5432/
     volumes:
       - ./jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
     ports:
       - 8010:8010
+  provider-app:
+    image: provider
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-provider:5432/
+    volumes:
+      - ./jssecacerts:/opt/java/openjdk/lib/security/jssecacerts
+    ports:
+      - 8011:8011
+  swagger-ui:
+    image: markuskarileet/swagger-ui
+    volumes:
+      - ./swagger-ui.yml:/app/application.yml
+    ports:
+      - 8888:8888
 networks:
   default:
     external:

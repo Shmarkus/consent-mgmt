@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Consent Management > Service
+  title: Consent Management > Service Declaration
 tags:
   - name: service-declaration
 paths:
@@ -42,7 +42,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 servers:
-  - url: http://localhost:8011
+  - url: https://declaration-app:8010
 components:
   schemas:
     ServiceDeclaration:

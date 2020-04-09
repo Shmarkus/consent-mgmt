@@ -1,0 +1,13 @@
+version: '3'
+services:
+  postgresql-provider:
+    image: postgres:11.5-alpine
+    environment:
+      - POSTGRES_USER=provider
+      - POSTGRES_PASSWORD=
+    ports:
+      - 5431:5432
+networks:
+  default:
+    external:
+      name: consent_net

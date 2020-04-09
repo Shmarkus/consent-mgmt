@@ -17,15 +17,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class DeclarationResourceIntegrationTest {
-    final String SERVICE_DECLARATION_ID = "serviceDeclarationId";
-    final String SERVICE_PROVIDER_ID = "serviceProviderId";
-    final int CONSENT_MAX_DURATION = 0;
-    final int MAX_CACHE = 0;
-    final String DESCRIPTION = "description";
-    final String NAME = "name";
-    final boolean DOES_NOT_NEED_SIG = false;
-    final String TECHNICAL_DESCRIPTION = "E";
-    final long VALID_UNTIL_FUTURE = Instant.now().plusSeconds(60 * 60).getEpochSecond();
+    private static final String URL = "/declaration";
+
+    private static final String SERVICE_DECLARATION_ID = "serviceDeclarationId";
+    private static final String SERVICE_PROVIDER_ID = "serviceProviderId";
+    private static final int CONSENT_MAX_DURATION = 0;
+    private static final int MAX_CACHE = 0;
+    private static final String DESCRIPTION = "description";
+    private static final String NAME = "name";
+    private static final boolean DOES_NOT_NEED_SIG = false;
+    private static final String TECHNICAL_DESCRIPTION = "E";
+    private static final long VALID_UNTIL_FUTURE = Instant.now().plusSeconds(60 * 60).getEpochSecond();
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -43,8 +45,9 @@ class DeclarationResourceIntegrationTest {
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
 
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isNotNull();
         assertThat(responseEntity.getBody().getResponse()).isEqualTo("OK");
     }
 
@@ -61,9 +64,9 @@ class DeclarationResourceIntegrationTest {
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
 
-        restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
 
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -79,7 +82,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(Instant.EPOCH.getEpochSecond());
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -95,7 +98,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -111,7 +114,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -127,7 +130,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -143,7 +146,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -159,7 +162,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -175,7 +178,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(null)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
@@ -191,7 +194,7 @@ class DeclarationResourceIntegrationTest {
                 .needSignature(DOES_NOT_NEED_SIG)
                 .technicalDescription(TECHNICAL_DESCRIPTION)
                 .validUntil(VALID_UNTIL_FUTURE);
-        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity("/declaration", sdr, ServiceDeclarationResponse.class);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 

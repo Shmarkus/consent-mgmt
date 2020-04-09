@@ -4,5 +4,6 @@
   "apiPackage": "com.helmes.consent.declaration.server.api",
   "modelPackage": "com.helmes.consent.declaration.server.model",
   "interfaceOnly": true,
-  "serializableModel": "true"
+  "serializableModel": "true",
+  "swaggerDocketConfig": true
 }
