@@ -106,6 +106,16 @@ curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: applic
 # OpenAPI
 Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas swagger-sui.yml failis
 
+# Logimine
+Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
+  * ava [Kibana](http://localhost:5601)
+  * vali *Connect to your Elasticsearch index*
+  * Index patterniks sisesta *syslog*
+  * "Time Filter field name" väärtuseks vali *@timestamp*
+  * seejärel vajuta "Create index pattern"
+  
+Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
+
 # Arendajale
 
 Teenuse sertifikaadi genereerimine:

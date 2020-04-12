@@ -28,7 +28,8 @@ public class DeclarationResource implements DeclarationApi {
     @Override
     public ResponseEntity<ServiceDeclarationResponse> addServiceDeclaration(@Valid ServiceDeclaration serviceDeclaration) {
         log.info("Request to save service declaration: {}", serviceDeclaration);
-        this.declarationService.save(serviceDeclaration);
+        ServiceDeclaration declaration = this.declarationService.save(serviceDeclaration);
+        log.info("Declaration saved: {}", declaration);
         ServiceDeclarationResponse response = new ServiceDeclarationResponse();
         response.setResponse("OK");
         return ResponseEntity.ok(response);
