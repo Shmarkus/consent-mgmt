@@ -1,10 +1,15 @@
 package com.helmes.consent.declaration.rest;
 
+import com.helmes.consent.declaration.feign.model.ServiceProvider;
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
 import com.helmes.consent.declaration.server.model.ServiceDeclarationResponse;
+import com.helmes.consent.declaration.service.feign.ServiceProviderApiClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +18,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.Instant;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -31,6 +38,15 @@ class DeclarationResourceIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @MockBean
+    private ServiceProviderApiClient serviceProviderApiClientMock;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+        doReturn(ResponseEntity.ok(new ServiceProvider())).when(serviceProviderApiClientMock).getServiceProviderByServiceProviderId(any());
+    }
 
     @Test
     void shouldAdd_validServiceDeclaration() {
@@ -184,6 +200,23 @@ class DeclarationResourceIntegrationTest {
 
     @Test
     void shouldNotAdd_consentMaxDurationSecondsMissing() {
+        ServiceDeclaration sdr = new ServiceDeclaration();
+        sdr.serviceDeclarationId(SERVICE_DECLARATION_ID)
+                .serviceProviderId(SERVICE_PROVIDER_ID)
+                .consentMaxDurationSeconds(null)
+                .maxCacheSeconds(MAX_CACHE)
+                .description(DESCRIPTION)
+                .name(NAME)
+                .needSignature(DOES_NOT_NEED_SIG)
+                .technicalDescription(TECHNICAL_DESCRIPTION)
+                .validUntil(VALID_UNTIL_FUTURE);
+        ResponseEntity<ServiceDeclarationResponse> responseEntity = restTemplate.postForEntity(URL, sdr, ServiceDeclarationResponse.class);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldNotAdd_providerNotFound() {
+        doReturn(ResponseEntity.notFound().build()).when(serviceProviderApiClientMock).getServiceProviderByServiceProviderId(any());
         ServiceDeclaration sdr = new ServiceDeclaration();
         sdr.serviceDeclarationId(SERVICE_DECLARATION_ID)
                 .serviceProviderId(SERVICE_PROVIDER_ID)

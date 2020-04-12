@@ -36,7 +36,7 @@ public class DeclarationServiceImpl implements DeclarationService {
             serviceProviderApi.getServiceProviderByServiceProviderId(request.getServiceProviderId());
         } catch (Exception e) {
             log.error("Unable to retrieve service provider: {}", e.getMessage());
-            // throw new DeclarationValidationException("invalid_request");
+            throw new DeclarationValidationException("invalid_request");
         }
         if (!declarationRequestValidator.isValid(request)) {
             log.error("Unable to save, request is not valid");
