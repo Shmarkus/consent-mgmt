@@ -23,3 +23,11 @@ info:
   app:
     name: ${spring.application.name}
     version: 1.0.0
+application:
+  logging:
+    use-json-format: true
+    logstash:
+      enabled: true
+      host: logstash
+      port: 5044
+      queue-size: 512
