@@ -35,9 +35,6 @@ Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või
 Andmebaas paigaldatakse ning muudatusi hallatakse läbi Liquibase skriptide. Rakenduse käivitamisel kontrollitakse andmebaasi seisu
 ning vajadusel uuendatakse andmebaasi struktuur. Liquibase skriptid on leitavad: ```provider/src/main/resources/liquibase``` ja 
 ```declaration/src/main/resources/liquibase```
-@FeignClient(name="${serviceProvider.name:serviceProvider}", url="${serviceProvider.url:https://localhost:8011}", configuration = ClientConfiguration.class)
-public interface ServiceProviderApiClient extends ServiceProviderApi {
-}
 
 # Paigaldus
 
@@ -104,7 +101,7 @@ curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: applic
 ```
 
 # OpenAPI
-Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas swagger-sui.yml failis
+Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis
 
 # Logimine
 Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
