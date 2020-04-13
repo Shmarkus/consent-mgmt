@@ -33,4 +33,10 @@
                              tableName="provider"
                              validate="true"/>
     </changeSet>
+    <changeSet id="Add fake data" author="markus" context="faker">
+        <loadData file="liquibase/fake-data/provider.csv"
+                  separator=","
+                  tableName="provider">
+        </loadData>
+    </changeSet>
 </databaseChangeLog>

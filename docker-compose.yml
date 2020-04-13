@@ -41,7 +41,7 @@ services:
   provider-app:
     image: provider
     environment:
-      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m -Dspring.liquibase.contexts=dev,faker
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql-provider:5432/
     volumes:
