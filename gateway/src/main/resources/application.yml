@@ -7,8 +7,10 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
       discovery:
         locator:
           enabled: true
