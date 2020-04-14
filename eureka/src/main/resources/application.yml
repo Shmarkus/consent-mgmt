@@ -1,6 +1,7 @@
 spring:
   application:
     name: eureka
+  cloud.loadbalancer.ribbon.enabled: false
 eureka:
   instance:
     hostname: eureka-app

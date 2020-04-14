@@ -5,8 +5,6 @@ services:
     environment:
       - POSTGRES_USER=declaration
       - POSTGRES_PASSWORD=
-    ports:
-    - 5432:5432
 networks:
   default:
     external:

@@ -42,7 +42,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 servers:
-  - url: https://declaration-app:8010
+  - url: https://localhost:8443/DECLARATION
 components:
   schemas:
     ServiceDeclaration:

@@ -1,4 +1,5 @@
 spring:
+  cloud.loadbalancer.ribbon.enabled: false
   application:
     name: provider
   liquibase:

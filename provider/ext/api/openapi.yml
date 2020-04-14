@@ -28,7 +28,7 @@ paths:
         "404":
           description: Service Provider with provided ID not found
 servers:
-  - url: https://provider-app:8011
+  - url: https://localhost:8443/PROVIDER
 components:
   schemas:
     ServiceProvider:

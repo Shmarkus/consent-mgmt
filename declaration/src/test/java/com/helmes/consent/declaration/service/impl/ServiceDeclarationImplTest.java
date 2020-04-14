@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,6 +45,7 @@ class ServiceDeclarationImplTest {
         MockitoAnnotations.initMocks(this);
         doReturn(new Declaration()).when(repository).save(any());
         doReturn(true).when(validator).isValid(any());
+        doReturn(ResponseEntity.ok().build()).when(serviceProviderApi).getServiceProviderByServiceProviderId(any());
         this.declarationService = new DeclarationServiceImpl(declarationMapper, repository, validator, serviceProviderApi);
     }
 
@@ -60,7 +62,7 @@ class ServiceDeclarationImplTest {
     }
 
     @Test
-    void shouldNotSave_notValidCache() {
+    void shouldNotSave_declarationNotValid() {
         doReturn(false).when(validator).isValid(any());
         assertThrows(DeclarationValidationException.class, () -> this.declarationService.save(new ServiceDeclaration()));
     }
