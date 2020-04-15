@@ -34,19 +34,16 @@ public class DeclarationServiceImpl implements DeclarationService {
         try {
             serviceProviderApi.getServiceProviderByServiceProviderId(request.getServiceProviderId());
         } catch (Exception e) {
-            log.error("Unable to retrieve service provider: {}", e.getMessage());
-            throw new DeclarationValidationException("invalid_request");
+            throw new DeclarationValidationException(e.getMessage());
         }
         if (!declarationRequestValidator.isValid(request)) {
-            log.error("Unable to save, request is not valid");
-            throw new DeclarationValidationException("invalid_request");
+            throw new DeclarationValidationException("Field requirements not met");
         }
         try {
             Declaration declaration = declarationRepository.save(declarationMapper.toEntity(request));
             return declarationMapper.toDto(declaration);
         } catch (DataIntegrityViolationException e) {
-            log.error("Unable to save: {}", e.getMessage());
-            throw new DuplicateDeclarationException("duplicate_declaration");
+            throw new DuplicateDeclarationException(e.getMessage());
         }
     }
 }
