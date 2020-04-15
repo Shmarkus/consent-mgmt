@@ -50,7 +50,6 @@ Kõikide teenuste ehitamiseks käivita (kindla teenuse ehitamiseks käivita sama
 
 ```./gradlew clean build```
 
-# Ilma Dockerita
 Enne projektide käivitamist lisada hosts faili (C:\Windows\System32\drivers\etc\hosts, /etc/hosts), **vastasel juhul sertifikaadikontroll ebaõnnestub**:
 ```
 127.0.0.1 eureka-app
@@ -58,6 +57,9 @@ Enne projektide käivitamist lisada hosts faili (C:\Windows\System32\drivers\etc
 127.0.0.1 provider-app
 127.0.0.1 declaration-app
 ```
+Lisaks on hostide resolvimist vaja ka Swagger UI toimimiseks.
+
+## Ilma Dockerita
 
 Teenuse kokkuehitatud pakk asub teenuse kaustas **[teenus]/build/libs**. Teenuse lokaalseks käivitamiseks kasuta käsku:
 
@@ -67,7 +69,7 @@ Välise konfiguratsiooni kasutamiseks kasuta järgmist käsku:
 
 ```java -Djavax.net.ssl.trustStore=[teekond projektijuurkaustani]/jssecacerts -jar [teekond projektijuurkaustani]/build/libs/.jar --spring.config.location=classpath:config/application.yml,[teekond konfiguratsioonifailini].yml```
 
-# Docker
+## Docker
 
 Dockeri seadistuseks loo esmalt väline võrk:
 
@@ -95,7 +97,21 @@ Kui teenus on töökorras, on vastuseks:
 }
 ```
 
-# Teenuse test
+### OpenAPI
+Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**!
+
+### Logimine
+Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
+  * ava [Kibana](http://localhost:5601)
+  * vali *Explore on my own*
+  * vali *Connect to your Elasticsearch index*
+  * Index patterniks sisesta *syslog*
+  * "Time Filter field name" väärtuseks vali *@timestamp*
+  * seejärel vajuta "Create index pattern"
+  
+Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
+
+## Teenuse test
 Kutsu teenus välja järgmise käsuga, mis tekitab uue kirje andmebaasi (response: ok):
 ```bash
 curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":0,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
@@ -141,20 +157,7 @@ Nõusoleku maksimaalne kestvus puudu (invalid_request):
 curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":null,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
 ```
 
-# OpenAPI
-Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis
-
-# Logimine
-Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
-  * ava [Kibana](http://localhost:5601)
-  * vali *Connect to your Elasticsearch index*
-  * Index patterniks sisesta *syslog*
-  * "Time Filter field name" väärtuseks vali *@timestamp*
-  * seejärel vajuta "Create index pattern"
-  
-Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
-
-# Arendajale
+## Arendajale
 
 Teenuse sertifikaadi genereerimine:
 ```bash
@@ -168,3 +171,12 @@ Genereeritud sertifikaadi import:
 ```keytool -import -file [declaration].crt -alias [declaration] -keystore jssecacerts```
 
 Jssecacerts parool on ```changeit```
+
+## Cleanup
+
+Kui teenuste käivitamisel midagi ebaõnnestub, siis enne uuesti proovimist on oluline ära koristada teenused, mis võivad probleeme põhjustada.
+ * ```docker-compose down``` projekti juurkataloogis, et panna seisma töötavad konteinerid
+ * ```./gradlew clean```  projekti juurkataloogis, et eemaldada projekti build failid
+ * ```docker network remove consent_net``` eemaldamaks Dockeri võrgu
+ * ```docker system prune -af``` eemaldamaks kõik genereeritud konteinerid
+ * eemalda hosts failist lisatud hostid
