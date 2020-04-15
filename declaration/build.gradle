@@ -5,12 +5,14 @@ plugins {
     id 'java'
     id "org.openapi.generator" version "4.3.0"
     id 'com.google.cloud.tools.jib' version '2.1.0'
+    id 'jacoco'
 }
 
 apply from: "gradle/api.gradle"
 apply from: "gradle/mapstruct.gradle"
 apply from: "gradle/docker.gradle"
 apply from: "gradle/liquibase.gradle"
+apply from: "gradle/jacoco.gradle"
 
 group = 'com.helmes.consent'
 version = '0.0.1-SNAPSHOT'
@@ -19,9 +21,6 @@ sourceCompatibility = '11'
 test {
     useJUnitPlatform()
     exclude "**/*IT*", "**/*IntegrationTest*"
-    testLogging {
-        events 'FAILED', 'SKIPPED'
-    }
 }
 
 task integrationTest(type: Test) {
@@ -29,9 +28,6 @@ task integrationTest(type: Test) {
     description = "Execute integration tests."
     group = "verification"
     include "**/*IT*", "**/*IntegrationTest*"
-    testLogging {
-        events 'FAILED', 'SKIPPED'
-    }
 }
 
 check.dependsOn integrationTest

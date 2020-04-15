@@ -1,0 +1,22 @@
+jacoco {
+    toolVersion = '0.8.2'
+}
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+    }
+    afterEvaluate {
+        classDirectories.from = files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    includes: ['com/helmes/consent/declaration'],
+                    exclude: [
+                            'org/openapitools/**',
+                            'com/helmes/consent/declaration/config/**',
+                            'com/helmes/consent/declaration/feign/**',
+                            'com/helmes/consent/declaration/server/**',
+                            'com/helmes/consent/declaration/service/mapper/**']
+            )
+        })
+    }
+}
