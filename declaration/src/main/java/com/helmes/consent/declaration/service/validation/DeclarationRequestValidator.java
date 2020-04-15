@@ -1,6 +1,7 @@
 package com.helmes.consent.declaration.service.validation;
 
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
+import com.helmes.consent.declaration.service.validation.exception.DeclarationValidationException;
 
 /**
  * Validator for Service Declaration

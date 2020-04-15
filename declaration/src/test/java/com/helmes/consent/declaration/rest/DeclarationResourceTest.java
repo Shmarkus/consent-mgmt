@@ -2,8 +2,8 @@ package com.helmes.consent.declaration.rest;
 
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
 import com.helmes.consent.declaration.service.DeclarationService;
-import com.helmes.consent.declaration.service.impl.DuplicateDeclarationException;
-import com.helmes.consent.declaration.service.validation.DeclarationValidationException;
+import com.helmes.consent.declaration.service.impl.exception.DuplicateDeclarationException;
+import com.helmes.consent.declaration.service.validation.exception.DeclarationValidationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

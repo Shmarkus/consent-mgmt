@@ -1,8 +1,8 @@
 package com.helmes.consent.declaration.service;
 
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
-import com.helmes.consent.declaration.service.impl.DuplicateDeclarationException;
-import com.helmes.consent.declaration.service.validation.DeclarationValidationException;
+import com.helmes.consent.declaration.service.impl.exception.DuplicateDeclarationException;
+import com.helmes.consent.declaration.service.validation.exception.DeclarationValidationException;
 
 /**
  * Service Declaration Request-related services

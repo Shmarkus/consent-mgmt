@@ -2,16 +2,15 @@ package com.helmes.consent.declaration.service.impl;
 
 import com.helmes.consent.declaration.domain.Declaration;
 import com.helmes.consent.declaration.feign.api.ServiceProviderApi;
-import com.helmes.consent.declaration.feign.model.ServiceProvider;
 import com.helmes.consent.declaration.repository.DeclarationRepository;
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
 import com.helmes.consent.declaration.service.DeclarationService;
+import com.helmes.consent.declaration.service.impl.exception.DuplicateDeclarationException;
 import com.helmes.consent.declaration.service.mapper.DeclarationMapper;
 import com.helmes.consent.declaration.service.validation.DeclarationRequestValidator;
-import com.helmes.consent.declaration.service.validation.DeclarationValidationException;
+import com.helmes.consent.declaration.service.validation.exception.DeclarationValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Slf4j

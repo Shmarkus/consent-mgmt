@@ -1,6 +1,8 @@
-package com.helmes.consent.declaration.service.validation;
+package com.helmes.consent.declaration.service.validation.impl;
 
 import com.helmes.consent.declaration.server.model.ServiceDeclaration;
+import com.helmes.consent.declaration.service.validation.DeclarationRequestValidator;
+import com.helmes.consent.declaration.service.validation.exception.DeclarationValidationException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.ConstraintViolation;
