@@ -12,9 +12,8 @@ public class ApplicationProperties {
 
     public static class Logging {
 
-        private boolean useJsonFormat = false;
-
         private final Logstash logstash = new Logstash();
+        private boolean useJsonFormat = false;
 
         public boolean isUseJsonFormat() {
             return useJsonFormat;

@@ -13,8 +13,8 @@ public interface DeclarationService {
      *
      * @param request Request to save
      * @return ServiceDeclaration When validation passes and request is stored to database
-     * @throws DeclarationValidationException           When validation fails
-     * @throws DuplicateDeclarationException When database save fails
+     * @throws DeclarationValidationException When validation fails
+     * @throws DuplicateDeclarationException  When database save fails
      */
     ServiceDeclaration save(ServiceDeclaration request) throws DeclarationValidationException, DuplicateDeclarationException;
 }

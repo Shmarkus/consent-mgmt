@@ -30,6 +30,7 @@ public class DeclarationErrorAdvice {
         response.setStatus(400);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({DeclarationValidationException.class})
     public ResponseEntity<ErrorResponse> handleException(DeclarationValidationException e) {
@@ -41,6 +42,7 @@ public class DeclarationErrorAdvice {
         response.setStatus(400);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException e) {

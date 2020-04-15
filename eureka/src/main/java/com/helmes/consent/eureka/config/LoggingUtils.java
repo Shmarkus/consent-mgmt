@@ -28,13 +28,13 @@ public final class LoggingUtils {
     private static final String CONSOLE_APPENDER_NAME = "CONSOLE";
     private static final String ASYNC_LOGSTASH_APPENDER_NAME = "ASYNC_LOGSTASH";
 
-    private LoggingUtils () {
+    private LoggingUtils() {
     }
 
     /**
      * <p>addJsonConsoleAppender.</p>
      *
-     * @param context a {@link LoggerContext} object.
+     * @param context      a {@link LoggerContext} object.
      * @param customFields a {@link String} object.
      */
     public static void addJsonConsoleAppender(LoggerContext context, String customFields) {
@@ -54,8 +54,8 @@ public final class LoggingUtils {
     /**
      * <p>addLogstashTcpSocketAppender.</p>
      *
-     * @param context a {@link LoggerContext} object.
-     * @param customFields a {@link String} object.
+     * @param context            a {@link LoggerContext} object.
+     * @param customFields       a {@link String} object.
      * @param logstashProperties a {@link ApplicationProperties.Logging.Logstash} object.
      */
     public static void addLogstashTcpSocketAppender(LoggerContext context, String customFields,
@@ -77,9 +77,9 @@ public final class LoggingUtils {
     /**
      * <p>addContextListener.</p>
      *
-     * @param context a {@link LoggerContext} object.
+     * @param context      a {@link LoggerContext} object.
      * @param customFields a {@link String} object.
-     * @param properties a {@link ApplicationProperties.Logging} object.
+     * @param properties   a {@link ApplicationProperties.Logging} object.
      */
     public static void addContextListener(LoggerContext context, String customFields, ApplicationProperties.Logging properties) {
         LogbackLoggerContextListener loggerContextListener = new LogbackLoggerContextListener(properties, customFields);

@@ -7,6 +7,7 @@ import java.util.Optional;
 public interface ProviderService {
     /**
      * Use service provider ID to find a provider
+     *
      * @param serviceProviderId Service Provider ID (not internal ID)
      * @return Provider
      */

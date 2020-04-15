@@ -19,14 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ProviderResourceTest {
-    @Mock
-    private ProviderService mockProviderService;
-
-    private MockMvc restServiceMockMvc;
     static final long ID = 1L;
     static final String NAME = "Test Provider";
     static final String SERVICE_PROVIDER_ID = "spId";
     static final String REGISTRY_NUMBER = "1234";
+    @Mock
+    private ProviderService mockProviderService;
+    private MockMvc restServiceMockMvc;
 
     @BeforeEach
     void setUp() {
