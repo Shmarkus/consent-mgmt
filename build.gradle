@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+}
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "jacoco"
+
+    tasks.withType(Test) {
+        reports.html.destination = file("${reporting.baseDir}/${name}")
+    }
+
+    test {
+        useJUnitPlatform()
+        exclude "**/*IT*", "**/*IntegrationTest*"
+    }
+
+    task integrationTest(type: Test) {
+        useJUnitPlatform()
+        description = "Execute integration tests."
+        group = "verification"
+        include "**/*IT*", "**/*IntegrationTest*"
+        mustRunAfter test
+    }
+
+    check.dependsOn integrationTest
+
+    jacoco.toolVersion = "0.8.5"
+
+    jacocoTestReport {
+        executionData fileTree(buildDir).include("/jacoco/*.exec")
+
+        reports {
+            xml.enabled = true
+            xml.destination = file("${buildDir}/reports/jacoco/jacoco.xml")
+
+            html.enabled = true
+            html.destination = file("${buildDir}/reports/jacoco/html")
+        }
+
+        afterEvaluate {
+            classDirectories.from = files(classDirectories.files.collect {
+                fileTree(dir: it, exclude: ['org/openapitools/configuration/**',
+                                            'com/helmes/consent/**/*Application',
+                                            'com/helmes/consent/**/config/**',
+                                            'com/helmes/consent/**/service/mapper/**']
+                )
+            })
+        }
+    }
+
+    check.dependsOn jacocoTestReport
+}

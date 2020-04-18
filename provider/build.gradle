@@ -17,26 +17,6 @@ group = 'com.helmes.consent'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
-test {
-    useJUnitPlatform()
-    exclude "**/*IT*", "**/*IntegrationTest*"
-    testLogging {
-        events 'FAILED', 'SKIPPED'
-    }
-}
-
-task integrationTest(type: Test) {
-    useJUnitPlatform()
-    description = "Execute integration tests."
-    group = "verification"
-    include "**/*IT*", "**/*IntegrationTest*"
-    testLogging {
-        events 'FAILED', 'SKIPPED'
-    }
-}
-
-check.dependsOn integrationTest
-
 repositories {
     mavenCentral()
 }
