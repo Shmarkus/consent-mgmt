@@ -98,7 +98,7 @@ Kui teenus on töökorras, on vastuseks:
 ```
 
 ### OpenAPI
-Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**!
+Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**! Sertifikaadi saab aksepeerida [siit](https://localhost:8443/PROVIDER/v3/api-doc)
 
 ### Logimine
 Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
