@@ -10,6 +10,7 @@ import com.helmes.consent.declaration.service.impl.exception.DuplicateDeclaratio
 import com.helmes.consent.declaration.service.mapper.DeclarationMapper;
 import com.helmes.consent.declaration.service.validation.DeclarationRequestValidator;
 import com.helmes.consent.declaration.service.validation.exception.DeclarationValidationException;
+import feign.FeignException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -65,6 +66,12 @@ class ServiceDeclarationImplTest {
     @Test
     void shouldNotSave_declarationNotValid() {
         doReturn(false).when(validator).isValid(any());
+        assertThrows(DeclarationValidationException.class, () -> this.declarationService.save(new ServiceDeclaration()));
+    }
+
+    @Test
+    void shouldNotSave_providerNotFound() {
+        doThrow(FeignException.FeignClientException.class).when(serviceProviderApi).getServiceProviderByServiceProviderId(any());
         assertThrows(DeclarationValidationException.class, () -> this.declarationService.save(new ServiceDeclaration()));
     }
 }

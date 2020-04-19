@@ -19,7 +19,7 @@ class DeclarationDeclarationRequestValidatorImplTest {
     final String TECHNICAL_DESCRIPTION = "E";
     final long VALID_UNTIL_FUTURE = Instant.now().plusSeconds(60 * 60).getEpochSecond();
 
-    private final DeclarationRequestValidator declarationRequestValidator = new DeclarationRequestValidatorImpl();
+    private final DeclarationRequestValidatorImpl declarationRequestValidator = new DeclarationRequestValidatorImpl();
 
     @Test
     void shouldNotBeValid_validUntilInPast() {
@@ -163,5 +163,37 @@ class DeclarationDeclarationRequestValidatorImplTest {
                 .validUntil(VALID_UNTIL_FUTURE);
         final boolean isValid = declarationRequestValidator.isValid(sdr);
         assertThat(isValid).isTrue();
+    }
+
+    @Test
+    void shouldBeValid_maxCacheSecondsIsValid() {
+        ServiceDeclaration sdr = new ServiceDeclaration();
+        sdr.setMaxCacheSeconds(0);
+        final boolean isValid = declarationRequestValidator.maxCacheSecondsIsValid(sdr);
+        assertThat(isValid).isTrue();
+    }
+
+    @Test
+    void shouldBeInvalid_maxCacheSecondsIsValid() {
+        ServiceDeclaration sdr = new ServiceDeclaration();
+        sdr.setMaxCacheSeconds(-1);
+        final boolean isValid = declarationRequestValidator.maxCacheSecondsIsValid(sdr);
+        assertThat(isValid).isFalse();
+    }
+
+    @Test
+    void shouldBeValid_validUntilIsValid() {
+        ServiceDeclaration sdr = new ServiceDeclaration();
+        sdr.validUntil(VALID_UNTIL_FUTURE);
+        final boolean isValid = declarationRequestValidator.validUntilIsValid(sdr);
+        assertThat(isValid).isTrue();
+    }
+
+    @Test
+    void shouldBeInvalid_validUntilIsValid() {
+        ServiceDeclaration sdr = new ServiceDeclaration();
+        sdr.validUntil(null);
+        final boolean isValid = declarationRequestValidator.validUntilIsValid(sdr);
+        assertThat(isValid).isFalse();
     }
 }

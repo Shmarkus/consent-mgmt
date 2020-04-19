@@ -46,8 +46,15 @@ subprojects {
         afterEvaluate {
             classDirectories.from = files(classDirectories.files.collect {
                 fileTree(dir: it, exclude: ['org/openapitools/configuration/**',
-                                            'com/helmes/consent/**/*Application',
+                                            'com/helmes/consent/**/*Application*',
+                                            'com/helmes/consent/**/rest/ApiDocController*',
                                             'com/helmes/consent/**/config/**',
+                                            'com/helmes/consent/**/server/api/**',
+                                            'com/helmes/consent/**/server/model/**',
+                                            'com/helmes/consent/**/feign/model/**',
+                                            'com/helmes/consent/**/domain/**',
+                                            'com/helmes/consent/eureka/**',
+                                            'com/helmes/consent/gateway/**',
                                             'com/helmes/consent/**/service/mapper/**']
                 )
             })

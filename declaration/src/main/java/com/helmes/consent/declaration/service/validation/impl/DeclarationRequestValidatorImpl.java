@@ -19,8 +19,23 @@ public class DeclarationRequestValidatorImpl implements DeclarationRequestValida
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         Validator validator = factory.getValidator();
         Set<ConstraintViolation<ServiceDeclaration>> violations = validator.validate(request);
-        return violations.isEmpty() &&
-                (request.getValidUntil() != null && request.getValidUntil() > Instant.now().getEpochSecond()) &&
-                request.getMaxCacheSeconds() >= 0;
+        if (!maxCacheSecondsIsValid(request)) {
+            return false;
+        }
+        if (!violations.isEmpty()) {
+            return false;
+        }
+        if (!validUntilIsValid(request)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validUntilIsValid(ServiceDeclaration request) {
+        return request.getValidUntil() != null && request.getValidUntil() > Instant.now().getEpochSecond();
+    }
+
+    public boolean maxCacheSecondsIsValid(ServiceDeclaration request) {
+        return request.getMaxCacheSeconds() >= 0;
     }
 }
