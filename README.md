@@ -50,6 +50,8 @@ Kõikide teenuste ehitamiseks käivita (kindla teenuse ehitamiseks käivita sama
 
 ```./gradlew clean build```
 
+## Hosts faili muutmine
+
 Enne projektide käivitamist lisada hosts faili (C:\Windows\System32\drivers\etc\hosts, /etc/hosts), **vastasel juhul sertifikaadikontroll ebaõnnestub**:
 ```
 127.0.0.1 eureka-app
@@ -84,6 +86,26 @@ Konteinerite käivitamiseks käivita:
 ```docker-compose  up -d```
 > See on proovitöö hindamise eesmärgil loodud otsetee kõikide teenuste käivitamiseks ning selles failis on avatud ka kõikide teenuste pordid. Iga teenuse juures ext/docker kaustas asub teenuse toodangu Compose fail, kus ainult 8443 port on maailmale nähtav
 
+### OpenAPI
+Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**! Sertifikaadid saab aksepteerida siit: [provider](https://provider-app:8011/v3/api-doc), [declaration](https://declaration-app:8010/v3/api-doc).
+Hosts fail peab olema muudetud (vaata: Hosts faili muutmine)
+
+### Logimine
+Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
+  * ava [Kibana](http://localhost:5601)
+  * vali *Explore on my own*
+  * vali *Connect to your Elasticsearch index*
+  * Index patterniks sisesta *syslog*
+  * "Time Filter field name" väärtuseks vali *@timestamp*
+  * seejärel vajuta "Create index pattern"
+  
+Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
+
+
+# Testimine
+
+## Masinloetavad heartbeat liidesed
+
 Kontrolli teenuste toimimist:
  * [Eureka](https://localhost:8761/actuator/health)
  * [Gateway](https://localhost:8443/actuator/health)
@@ -97,21 +119,7 @@ Kui teenus on töökorras, on vastuseks:
 }
 ```
 
-### OpenAPI
-Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**! Sertifikaadi saab aksepteerida [siit](https://localhost:8443/PROVIDER/v3/api-doc)
-
-### Logimine
-Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
-  * ava [Kibana](http://localhost:5601)
-  * vali *Explore on my own*
-  * vali *Connect to your Elasticsearch index*
-  * Index patterniks sisesta *syslog*
-  * "Time Filter field name" väärtuseks vali *@timestamp*
-  * seejärel vajuta "Create index pattern"
-  
-Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
-
-## Teenuse test
+## Teenuste test
 Kutsu teenus välja järgmise käsuga, mis tekitab uue kirje andmebaasi (response: ok):
 ```bash
 curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: application/json" -H "Content-Type: application/json" -d "{\"serviceProviderId\":\"spId\",\"serviceDeclarationId\":\"dId\",\"name\":\"Name\",\"description\":\"description in different langs\",\"technicalDescription\":\"technical stuff\",\"consentMaxDurationSeconds\":0,\"needSignature\":false,\"validUntil\":1901307432,\"maxCacheSeconds\":0}" -k -v
