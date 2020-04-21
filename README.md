@@ -36,7 +36,7 @@ Andmebaas paigaldatakse ning muudatusi hallatakse läbi Liquibase skriptide. Rak
 ning vajadusel uuendatakse andmebaasi struktuur. Liquibase skriptid on leitavad: ```provider/src/main/resources/liquibase``` ja 
 ```declaration/src/main/resources/liquibase```
 
-# Paigaldus
+# Paigaldusjuhend
 
 Integratsioonitestide jaoks käivita:
 
@@ -102,7 +102,7 @@ Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on 
 Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
 
 
-# Testimine
+# Testimisjuhend
 
 ## Masinloetavad heartbeat liidesed
 
