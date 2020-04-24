@@ -3,6 +3,11 @@
 ## Platvormid
  * AdoptOpenJDK 11
  * Postgre SQL 11.5
+ * curl 7.46.0
+ * Docker 19.03.6
+ * Docker Compose 1.17.1
+ * Openssl 1.0.2e
+ * Gradle 5.2.1
  
 ## Raamistikud
  * Spring Framework 5.2.5.RELEASE
@@ -13,6 +18,7 @@
  * Mapstruct 1.2.0
  * Lombok 1.18.12
  * OpenAPI v3 (generator) 4.3.0
+ * JIB 2.1.0
  
 # Projekti ülesehitus
 Tegemist on Gradle multi-project projektiga, et hõlbustada proovitöö esitamist. Ideaalmaailmas on iga teenus oma koodivaramus.
@@ -27,8 +33,8 @@ Eureka server on hädavajalik teenuste avastamisel, Gateway kasutab Eurekat, et 
 
 Igas projektis on **ext** kaust, kus asuvad nii Docker Compose kui ka OpenApi failid. OpenApi spetsifikatsiooni kasutatakse
 serveri teenuste koodigenereerimisel Gradle **compileJava** taski sees.
- * **declaration** teenuse OpenApi spec: ```declaration\ext\api\openapi.yml```
- * **provider** teenuse OpenApi spec: ```provider\ext\api\openapi.yml```
+ * **declaration** teenuse OpenApi spec: ```declaration/ext/api/openapi.yml```
+ * **provider** teenuse OpenApi spec: ```provider/ext/api/openapi.yml```
 
 Gradle build failid on ehitatud modulaarsetena. Lisad, nagu OpenApi, Docker või MapStruct on leitavad teenuse **gradle** kaustast
 
@@ -38,7 +44,17 @@ ning vajadusel uuendatakse andmebaasi struktuur. Liquibase skriptid on leitavad:
 
 # Paigaldusjuhend
 
-Integratsioonitestide jaoks käivita:
+Juhend on kirjutatud eeldades et keskkonnaks on Linux. Windowsi jaoks kasutada Gradle käivituseks ```gradlew.bat``` ja kaustadesse navigeerimisel vahetada ```/``` Windowsi ```\ ``` vastu
+
+Paki lahti ZIP fail
+
+```unzip consent-mgmt-master.zip```
+
+Navigeeri projekti kausta
+
+```cd consent-mgmt-master```
+
+Et veenduda paki korrektses toimimises käivita integratsioonitestid:
 
 ```./gradlew integrationTest```
 
@@ -71,6 +87,40 @@ Välise konfiguratsiooni kasutamiseks kasuta järgmist käsku:
 
 ```java -Djavax.net.ssl.trustStore=[teekond projektijuurkaustani]/jssecacerts -jar [teekond projektijuurkaustani]/build/libs/.jar --spring.config.location=classpath:config/application.yml,[teekond konfiguratsioonifailini].yml```
 
+Välise teenuse konfiguratsiooni näide:
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://[andmebaas]:5432/declaration
+    username: [kasutajanimi]
+    password: [parool]
+server:
+  port: [teenuse port]
+  ssl:
+    enabled: [kas kasutada TSLi]
+    key-store: [teekond sertifikaadi keystoreni]
+    key-alias: [võtme alias keystores]
+    key-store-password: [keystore parool]
+eureka:
+  instance:
+    hostname: [teenuse hostname]
+    non-secure-port-enabled: false #kas kasutatakse lisaks TSLile ka tavalist HTTP ühendust?
+    non-secure-port: [HTTP port, kui TSL pole kasutuses] 
+    secure-port: [TSL puhul port]
+    secure-port-enabled: true #kas kasutatakse TSLi
+  client:
+    serviceUrl:
+      defaultZone: [URL Eureka serverini]
+application:
+  logging:
+    use-json-format: false #true kui kasutada Logstashi (ELK)
+    logstash:
+      enabled: false # true kui kasutada Logstashi (ELK)
+      host: [logstashi URL]
+      port: [logstashi port]
+      queue-size: 512
+```
+
 ## Docker
 
 Dockeri seadistuseks loo esmalt väline võrk:
@@ -87,12 +137,14 @@ Konteinerite käivitamiseks käivita:
 > See on proovitöö hindamise eesmärgil loodud otsetee kõikide teenuste käivitamiseks ning selles failis on avatud ka kõikide teenuste pordid. Iga teenuse juures ext/docker kaustas asub teenuse toodangu Compose fail, kus ainult 8443 port on maailmale nähtav
 
 ### OpenAPI
-Et lihtsustada liidestamist teenustega, on Docker compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**! Sertifikaadid saab aksepteerida siit: [provider](https://provider-app:8011/v3/api-doc), [declaration](https://declaration-app:8010/v3/api-doc).
+Et lihtsustada liidestamist teenustega, on Docker Compose faili lisatud ka [Swagger UI](http://localhost:8888/swagger-ui.html) kõikide teenuste spec'idega. Täiendavaid teenuseid saab lisada projekti juurkataloogis asuvas ```swagger-ui.yml``` failis. Selleks, et Swagger UI suudaks teenuse API spec'i kuvada, **peab kasutaja browseris olema declaration ja provider teenuse sertifikaadid aksepteeritud**! Sertifikaadid saab aksepteerida siit: [provider](https://provider-app:8011/v3/api-doc), [declaration](https://declaration-app:8010/v3/api-doc).
 Hosts fail peab olema muudetud (vaata: Hosts faili muutmine)
 
 ### Logimine
-Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on käivitunud siis: 
-  * ava [Kibana](http://localhost:5601)
+> Linuxi süsteemidel tuleb Kibana kasutamiseks suurendada avatud failide arvu: ```sudo sysctl -w vm.max_map_count=262144```
+
+Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui teenused fail on käivitunud siis: 
+  * oota, kuni Kibana käivitub ja [ava](http://localhost:5601)
   * vali *Explore on my own*
   * vali *Connect to your Elasticsearch index*
   * Index patterniks sisesta *syslog*
@@ -100,6 +152,16 @@ Kõik teenused on seadistatud oma logisid saatma Logstashi. Kui compose fail on 
   * seejärel vajuta "Create index pattern"
   
 Ava vasakult menüüst "Discover" ja lülita sisse *app_name*, *app_port*, *level*, *message* väljad. Kogu rakenduste hingeelu on siit nähtav
+
+
+## Puhastus
+
+Kui teenuste käivitamisel midagi ebaõnnestub, siis enne uuesti proovimist on oluline ära koristada teenused, mis võivad probleeme põhjustada.
+ * ```docker-compose down``` projekti juurkataloogis, et panna seisma töötavad konteinerid
+ * ```./gradlew clean```  projekti juurkataloogis, et eemaldada projekti build failid
+ * ```docker network remove consent_net``` eemaldamaks Dockeri võrgu
+ * ```docker system prune -a``` eemaldamaks kõik genereeritud konteinerid. See eemaldab ka varasemalt ehtatud imaged ja konteinerid!
+ * eemalda hosts failist lisatud hostid
 
 
 # Testimisjuhend
@@ -166,7 +228,7 @@ curl -X POST "https://localhost:8443/DECLARATION/declaration" -H "accept: applic
 ```
 
 ## Arendajale
-
+### Uute teenuste lisamine
 Teenuse sertifikaadi genereerimine:
 ```bash
 openssl genrsa -out [declaration].key 2048
@@ -179,12 +241,3 @@ Genereeritud sertifikaadi import:
 ```keytool -import -file [declaration].crt -alias [declaration] -keystore jssecacerts```
 
 Jssecacerts parool on ```changeit```
-
-## Cleanup
-
-Kui teenuste käivitamisel midagi ebaõnnestub, siis enne uuesti proovimist on oluline ära koristada teenused, mis võivad probleeme põhjustada.
- * ```docker-compose down``` projekti juurkataloogis, et panna seisma töötavad konteinerid
- * ```./gradlew clean```  projekti juurkataloogis, et eemaldada projekti build failid
- * ```docker network remove consent_net``` eemaldamaks Dockeri võrgu
- * ```docker system prune -af``` eemaldamaks kõik genereeritud konteinerid
- * eemalda hosts failist lisatud hostid
